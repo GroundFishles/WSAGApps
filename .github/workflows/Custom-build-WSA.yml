@@ -1,0 +1,110 @@
+name: Custom Build WSA
+on:
+  workflow_dispatch:
+    inputs:
+      arch:
+        type: choice
+        description: Architecture WSA.
+        required: true
+        options: [x64, arm64]
+        default: x64
+      release-type:
+        type: choice
+        description: Release type of WSA. RP=Release Preview, WIS=Insider Slow, WIF=Insider Fast
+        required: true
+        options: ["retail","RP","WIS","WIF"]
+        default: "retail"
+      gapps-brand:
+        type: choice
+        description: GApps brand. "none" for no integration of GApps
+        required: true
+        options: ["OpenGApps","MindTheGapps","none"]
+        default: "MindTheGapps"
+#      gapps-variant:
+#        type: choice
+#        description: GApps variant (Only if you chose OpenGApps).
+#        required: true
+#        options: ["super","stock","full","mini","micro","nano","pico","tvstock","tvmini"]
+#        default: "pico"
+      root-sol:
+        type: choice
+        description: Root solution. "none" - without root.
+        required: true
+        options: ["magisk","none"]
+        default: "magisk"
+      magisk-ver:
+        type: choice
+        description: Magisk version.
+        required: true
+        options: ["stable","beta","canary","debug"]
+        default: "stable"
+#      remove-amazon:
+#        description: Remove Amazon Appstore
+#        required: true
+#        type: boolean
+#        default: true
+      compress-format:
+        type: choice
+        description: Compress format.
+        required: true
+        options: ["zip","7z","xz"]
+        default: "zip"
+      tag:
+        description: Release Tag Name (without spaces)
+        required: true
+        default: "WSA"
+        type: string
+      release-name:
+        description: Release Title Name
+        required: false
+        default: ""
+        type: string
+      prerelease:
+        description: Release as Prerelease
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  custbuild:
+    name: Build WSA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y setools lzip wine wineticks patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip
+          sudo wget -P /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+          sudo chmod +x /usr/local/bin/winetricks
+          wget -P /home/runner/.cache/winetricks/msxml6/ https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/wine/.cache/winetricks/msxml6/msxml6-KB973686-enu-amd64.exe
+          pip list --disable-pip-version-check | grep -E "^requests " >/dev/null 2>&1 || python3 -m pip install requests
+          winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
+
+      - name: Grant exec permission to script
+        run: chmod +x ./scripts/build.sh
+
+      - name: Build WSA
+        id: wsa
+        run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release-type }} --remove-amazon --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --root-sol ${{ inputs.root-sol }} --compress-format ${{ inputs.compress-format }}
+
+      - name: Upload build to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./output/${{ steps.wsa.outputs.artifact }}.${{ inputs.compress-format }}
+          asset_name: ${{ steps.wsa.outputs.artifact }}.${{ inputs.compress-format }}
+          tag: ${{ inputs.tag }}
+          release_name: ${{ inputs.release-name }}
+          prerelease: ${{ inputs.prerelease }}
+          overwrite: true
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
