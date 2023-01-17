@@ -76,8 +76,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y setools lzip wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip
+          sudo apt update -y && sudo apt install -y setools lzip wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip cabextract
           sudo wget -P /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
           sudo chmod +x /usr/local/bin/winetricks
           wget -P /home/runner/.cache/winetricks/msxml6/ https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/wine/.cache/winetricks/msxml6/msxml6-KB2957482-enu-amd64.exe
