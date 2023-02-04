@@ -78,7 +78,7 @@ jobs:
     run: |
      sudo apt update && sudo apt install -y setools lzip wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip cabextract
      python3 -m pip install requests
-     sudo wget -P /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+     aria2c -d /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
      sudo chmod +x /usr/local/bin/winetricks
      winetricks msxml6
 
@@ -89,7 +89,7 @@ jobs:
   - name: Upload build to release
     uses: softprops/action-gh-release@v1
     with:
-     files: ./output/${{ steps.wsa.outputs }}
+     files: ./output/${{ steps.wsa.outputs.assets }}
      tag_name: ${{ inputs.tag }}
      name: ${{ inputs.release-name }}
      prerelease: ${{ inputs.prerelease }}
