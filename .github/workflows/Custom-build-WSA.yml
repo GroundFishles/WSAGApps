@@ -6,15 +6,15 @@ on:
     type: choice
     description: Architecture WSA.
     required: true
-    options: [x64, arm64]
+    options: [x64, ARM64]
     default: x64
-   release-type:
+   release_type:
     type: choice
     description: Release type of WSA. RP=Release Preview, WIS=Insider Slow, WIF=Insider Fast
     required: true
-    options: ["retail","RP","WIS","WIF"]
-    default: "RP"
-   gapps-brand:
+    options: ["Retail","Release Preview","Beta","Dev"]
+    default: "Release Preview"
+   gapps_brand:
     type: choice
     description: GApps brand. "none" for no integration of GApps
     required: true
@@ -26,29 +26,29 @@ on:
 #    required: true
 #    options: ["super","stock","full","mini","micro","nano","pico","tvstock","tvmini"]
 #    default: "pico"
-   root-sol:
+   root_sol:
     type: choice
     description: Root solution. "none" - without root.
     required: true
     options: ["magisk","none"]
     default: "magisk"
-   magisk-ver:
+   magisk_ver:
     type: choice
     description: Magisk version.
     required: true
-    options: ["stable","beta","canary","debug"]
-    default: "stable"
-#   remove-amazon:
-#    description: Remove Amazon Appstore
-#    required: true
-#    type: boolean
-#    default: true
-   compress-format:
+    options: ["Stable","Beta","Canary","Debug"]
+    default: "Stable"
+   remove_amazon:
+    description: Remove Amazon Appstore
+    required: true
+    type: boolean
+    default: true
+   compression:
     type: choice
     description: Compress format.
     required: true
-    options: ["zip","7z","xz"]
-    default: "zip"
+    options: ["ZIP","7-Zip","xz"]
+    default: "ZIP"
    prerelease:
     description: Release as Prerelease
     required: false
@@ -73,18 +73,20 @@ jobs:
      winetricks msxml6
 
   - name: Build WSA
-    id: wsa
-    run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release-type }} --remove-amazon --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --root-sol ${{ inputs.root-sol }} --compress-format ${{ inputs.compress-format }}
+    working-directory: ./scripts
+    run: |
+     declare -A opts=( ["ARCH,x64"]="x64" ["ARCH,ARM64"]="arm64" ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Beta"]="WIS" ["RELEASE_TYPE,Dev"]="WIF" ["MAGISK_VER,Stable"]="stable" ["MAGISK_VER,Beta"]="beta" ["MAGISK_VER,Canary"]="canary" ["MAGISK_VER,Debug"]="debug" ["MAGISK_VER,Custom"]="--magisk-custom" ["GAPPS_VAR,None"]="none" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Full"]="full" ["REMOVE_AMAZON,true"]="--remove-amazon" ["NOFIX_PROPS,true"]="--nofix-props" ["SKIP_DOWNLOAD_WSA,true"]="--skip-download-wsa" ["COMPRESSION,ZIP"]="zip" ["COMPRESSION,7-Zip"]="7z
+     ./build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release_type }} ${{ inputs.remove_amazon }} --magisk-ver ${{ inputs.magisk_ver }} --gapps-brand ${{ inputs.gapps_brand }} --root-sol ${{ inputs.root_sol }} --compress-format ${{ inputs.compression }}
 
   - name: Get tag version WSA
     shell: bash
     run: |
-      regex="WSA_(.*)_${{ inputs.arch }}"
-      if [[ $(ls ./output/*.${{ inputs.compress-format }}) =~ $regex ]]; then
-        echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
-      else
-        echo "wsaver=WSA" >> $GITHUB_ENV
-      fi
+     regex="WSA_(.*)_${{ inputs.arch }}"
+     if [[ $(ls ./output/*.${{ inputs.compression }}) =~ $regex ]]; then
+       echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+     else
+       echo "wsaver=WSA" >> $GITHUB_ENV
+     fi
 
   - name: Upload build to release
     uses: softprops/action-gh-release@v1
