@@ -18,7 +18,7 @@ on:
     type: choice
     description: GApps brand. "none" for no integration of GApps
     required: true
-    options: ["MindTheGapps","none"]
+    options: ["MindTheGapps","None"]
     default: "MindTheGapps"
 #   gapps-variant:
 #    type: choice
