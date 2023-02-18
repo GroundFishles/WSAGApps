@@ -76,7 +76,11 @@ jobs:
     working-directory: ./scripts
     run: |
      declare -A opts=( ["ARCH,x64"]="x64" ["ARCH,ARM64"]="arm64" ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Beta"]="WIS" ["RELEASE_TYPE,Dev"]="WIF" ["MAGISK_VER,Stable"]="stable" ["MAGISK_VER,Beta"]="beta" ["MAGISK_VER,Canary"]="canary" ["MAGISK_VER,Debug"]="debug" ["MAGISK_VER,Custom"]="--magisk-custom" ["GAPPS_VAR,None"]="none" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Full"]="full" ["REMOVE_AMAZON,true"]="--remove-amazon" ["NOFIX_PROPS,true"]="--nofix-props" ["SKIP_DOWNLOAD_WSA,true"]="--skip-download-wsa" ["COMPRESSION,ZIP"]="zip" ["COMPRESSION,7-Zip"]="7z
-     ./build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release_type }} ${{ inputs.remove_amazon }} --magisk-ver ${{ inputs.magisk_ver }} --gapps-brand ${{ inputs.gapps_brand }} --root-sol ${{ inputs.root_sol }} --compress-format ${{ inputs.compression }}
+   
+     COMMAND_LINE=(--arch "$ARCH" --release-type "$RELEASE_TYPE" --root-sol "$ROOT_SOL" --magisk-ver "$MAGISK_VER" "$CUSTOM_MAGISK" --gapps-brand "$GAPPS_BRAND" --gapps-variant "$GAPPS_VAR" "$COMPRESSION" "$REMOVE_AMAZON" "$NOFIX_PROPS" "$SKIP_DOWNLOAD_WSA" "$OFFLINE")
+     echo "COMMAND_LINE=${COMMAND_LINE[*]}" 
+
+     ./build.sh $(echo "${COMMAND_LINE[@]}")
 
   - name: Get tag version WSA
     shell: bash
