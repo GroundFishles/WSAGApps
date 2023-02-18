@@ -80,7 +80,7 @@ jobs:
     shell: bash
     run: |
       regex="WSA_(.*)_${{ inputs.arch }}"
-      if [[ $(ls ./MagiskOnWSALocal/output/*.${{ inputs.compress-format }}) =~ $regex ]]; then
+      if [[ $(ls ./output/*.${{ inputs.compress-format }}) =~ $regex ]]; then
         echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
       else
         echo "wsaver=WSA" >> $GITHUB_ENV
