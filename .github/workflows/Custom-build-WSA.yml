@@ -251,17 +251,52 @@ jobs:
      run: |
       regex="WSA_(.*)_${{ inputs.arch }}"
       if [[ $(ls ./output/*.${{ inputs.compression }}) =~ $regex ]]; then
-        echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+        echo "WSA_VER=${BASH_REMATCH[1]}" >> $GITHUB_ENV
       else
-        echo "wsaver=WSA" >> $GITHUB_ENV
+        echo "WSA_VER=WSA" >> $GITHUB_ENV
       fi
+
+- name: Generate Release Asset Name
+              working-directory: ./output
+              run: |
+                  declare -A magisk_vers=( ["Stable"]="stable" ["Beta"]="beta" ["Canary"]="canary" ["Debug"]="debug" )
+
+                  if [[ "${{ inputs.magisk_ver }}" == "None" ]]; then
+                      magiskVer=""
+                  elif [[ "${{ inputs.magisk_ver }}" == "Custom" ]]; then
+                      magiskVer="_Magisk-Custom"
+                  else
+                      magiskVer="_Magisk-${{ env.MAGISK_VERSION }}"
+                  fi
+                  export magiskVer
+
+                  if [[ "${{ inputs.gapps_var }}" == "None" ]]; then
+                      gappsVar=""
+                  elif [[ "${{ inputs.gapps_var }}" == *"MindTheGapps"* ]]; then
+                      gappsVar="_MindTheGapps"
+                  elif [[ "${{ inputs.gapps_var }}" == "Custom (OpenGApps)" ]]; then
+                      gappsVar="_OpenGApps-${{ env.opengapps_var }}"
+                  else
+                      gappsVar="_OpenGApps-${{ inputs.gapps_var }}"
+                  fi
+                  export gappsVar
+
+                  if [[ "${{ inputs.remove_amazon }}" == "true" ]]; then
+                      amazon=""
+                  else
+                      amazon="_Amazon-AppStore"
+                  fi
+                  export amazon
+
+                  echo "release_asset_name=WSA_${{ env.WSA_VER }}_${{ inputs.arch }}$magiskVer$gappsVar${amazon}" >> $GITHUB_ENV
+                  find . -maxdepth 1 -type f -name 'WSA.*' -exec bash -c 'mv "$1" "WSA_${{ env.WSA_VER }}_${{ inputs.arch }}${magiskVer}${gappsVar}${amazon}${1##*WSA}"' _ {} \;
 
    - name: Upload build to release
      uses: softprops/action-gh-release@v1
      with:
       files: ./output/*
-      tag_name: WSA-${{ env.wsaver }}
-      name: WSA ${{ env.wsaver }}
+      tag_name: WSA-${{ env.WSA_VER }}
+      name: WSA ${{ env.WSA_VER }}
       prerelease: ${{ inputs.prerelease }}
 
    - name: Delete workflow runs
