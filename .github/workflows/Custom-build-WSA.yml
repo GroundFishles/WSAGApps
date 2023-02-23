@@ -1,62 +1,62 @@
 name: Custom Build WSA
 on:
-    workflow_dispatch:
-        inputs:
-            arch:
-                description: "WSA Architecture"
-                required: true
-                default: "x86_64"
-                type: choice
-                options:
-                    - x86_64
-                    - ARM64
-            release_type:
-                description: "WSA Release Channel"
-                required: true
-                default: "Release Preview Channel"
-                type: choice
-                options:
-                    - General Availability Channel
-                    - Release Preview Channel
-                    - Beta Channel
-                    - Dev Channel
-            magisk_ver:
-                description: "Magisk Version"
-                required: true
-                default: "Stable"
-                type: choice
-                options:
-                    - None
-                    - Stable
-                    - Beta
-                    - Canary
-                    - Debug
+ workflow_dispatch:
+  inputs:
+   arch:
+    description: "WSA Architecture"
+    required: true
+    default: "x86_64"
+    type: choice
+    options:
+     - x86_64
+     - ARM64
+   release_type:
+    description: "WSA Release Channel"
+    required: true
+    default: "Release Preview Channel"
+    type: choice
+    options:
+     - General Availability Channel
+     - Release Preview Channel
+     - Beta Channel
+     - Dev Channel
+   magisk_ver:
+    description: "Magisk Version"
+    required: true
+    default: "Stable"
+    type: choice
+    options:
+     - None
+     - Stable
+     - Beta
+     - Canary
+     - Debug
 #                    - Custom
 #            magisk_url:
 #                description: "Custom Magisk APK/ZIP URL"
 #                required: false
 #                type: string
-            gapps_var:
-                description: "GApps Variant"
-                required: true
-                default: "MindTheGapps"
-                type: choice
-                options:
-                    - None
+   gapps_var:
+    description: "GApps Variant"
+    required: true
+    default: "MindTheGapps"
+    type: choice
+    options:
+     - None
+     - MindTheGapps
 #                    - Pico
 #                    - Full
-                    - MindTheGapps
 #                    - Custom (OpenGApps)
 #                    - Custom (MindTheGapps)
 #            gapps_url:
 #                description: "Custom GApps ZIP URL"
 #                required: false
 #                type: string
-            remove_amazon:
-                description: "Remove Amazon AppStore"
-                required: true
-                default: true
-                type: boolean
+   remove_amazon:
+    description: "Remove Amazon AppStore"
+    required: true
+    default: true
+    type: boolean
             # nofix_props:
             #     description: Props Remain Unfixed
             #     required: true
@@ -67,46 +67,46 @@ on:
             #     required: true
             #     default: false
             #     type: boolean
-            compression:
-                description: "Compression Algorithm"
-                required: true
-                default: "ZIP"
-                type: choice
-                options:
-                    - ZIP
-                    - 7-Zip
-                    - XZ
+   compression:
+    description: "Compression Algorithm"
+    required: true
+    default: "ZIP"
+    type: choice
+    options:
+     - ZIP
+     - 7-Zip
+     - XZ
 #            tag:
 #                description: "Release Tag Name"
 #                required: true
 #                default: "WSA"
 #                type: string
-            prerelease:
-                description: "Release as Prerelease"
-                required: false
-                default: false
-                type: boolean
+   prerelease:
+    description: "Release as Prerelease"
+    required: false
+    default: false
+    type: boolean
 
 permissions:
-    contents: write
+ contents: write
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-            - name: Install Dependencies
-              working-directory: ./scripts
-              run: |
-                  sudo apt update && sudo apt -y install setools lzip cabextract wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip
-                  python3 -m pip install requests
-                  aria2c -d /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-                  sudo chmod +x /usr/local/bin/winetricks
-                  winetricks msxml6
-            - name: Build MagiskOnWSA
-              working-directory: ./scripts
-              run: |
+ build:
+  runs-on: ubuntu-latest
+  steps:
+   - name: Checkout
+     uses: actions/checkout@v3
+   - name: Install Dependencies
+     working-directory: ./scripts
+     run: |
+      sudo apt update && sudo apt -y install setools lzip cabextract wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip
+      python3 -m pip install requests
+      aria2c -d /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+      sudo chmod +x /usr/local/bin/winetricks
+      winetricks msxml6
+   - name: Build MagiskOnWSA
+     working-directory: ./scripts
+     run: |
                   DOWNLOAD_DIR=../download
                   DOWNLOAD_CONF_NAME=download.list
 
