@@ -8,18 +8,18 @@ on:
     default: "x86_64"
     type: choice
     options:
-     - x86_64
-     - ARM64
+     - x64
+     - arm64
    release_type:
     description: "WSA Release Channel"
     required: true
     default: "Release Preview Channel"
     type: choice
     options:
-     - General Availability Channel
-     - Release Preview Channel
-     - Beta Channel
-     - Dev Channel
+     - Retail
+     - Release Preview
+     - Beta
+     - Dev
    magisk_ver:
     description: "Magisk Version"
     required: true
@@ -73,9 +73,9 @@ on:
     default: "ZIP"
     type: choice
     options:
-     - ZIP
-     - 7-Zip
-     - XZ
+     - zip
+     - 7z
+     - xz
 #            tag:
 #                description: "Release Tag Name"
 #                required: true
@@ -110,7 +110,7 @@ jobs:
                   DOWNLOAD_DIR=../download
                   DOWNLOAD_CONF_NAME=download.list
 
-                  declare -A opts=( ["ARCH,x86_64"]="x64" ["ARCH,ARM64"]="arm64" ["RELEASE_TYPE,General Availability Channel"]="retail" ["RELEASE_TYPE,Release Preview Channel"]="RP" ["RELEASE_TYPE,Beta Channel"]="WIS" ["RELEASE_TYPE,Dev Channel"]="WIF" ["MAGISK_VER,Stable"]="stable" ["MAGISK_VER,Beta"]="beta" ["MAGISK_VER,Canary"]="canary" ["MAGISK_VER,Debug"]="debug" ["MAGISK_VER,Custom"]="--magisk-custom" ["GAPPS_VAR,None"]="none" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Full"]="full" ["REMOVE_AMAZON,true"]="--remove-amazon" ["NOFIX_PROPS,true"]="--nofix-props" ["SKIP_DOWNLOAD_WSA,true"]="--skip-download-wsa" ["COMPRESSION,ZIP"]="zip" ["COMPRESSION,7-Zip"]="7z" ["COMPRESSION,XZ"]="xz" )
+                  declare -A opts=( ["ARCH,x64"]="x64" ["ARCH,arm64"]="arm64" ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Beta"]="WIS" ["RELEASE_TYPE,Dev"]="WIF" ["MAGISK_VER,Stable"]="stable" ["MAGISK_VER,Beta"]="beta" ["MAGISK_VER,Canary"]="canary" ["MAGISK_VER,Debug"]="debug" ["MAGISK_VER,Custom"]="--magisk-custom" ["GAPPS_VAR,None"]="none" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Full"]="full" ["REMOVE_AMAZON,true"]="--remove-amazon" ["NOFIX_PROPS,true"]="--nofix-props" ["SKIP_DOWNLOAD_WSA,true"]="--skip-download-wsa" ["COMPRESSION,zip"]="zip" ["COMPRESSION,7z"]="7z" ["COMPRESSION,xz"]="xz" )
 
                   ARCH="${opts[ARCH,${{ inputs.arch }}]}"
 
@@ -135,7 +135,7 @@ jobs:
                       MAGISK_VER="${opts[MAGISK_VER,Stable]}"
                   fi
 
-                  if [[ "${{ inputs.arch }}" == "x86_64" ]]; then
+                  if [[ "${{ inputs.arch }}" == "x64" ]]; then
                       GAPPS_VAR="${opts[GAPPS_VAR,${{ inputs.gapps_var }}]}"
                   else
                       # TODO: keep it 11.0 since official opengapps does not support 12+ yet
