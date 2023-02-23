@@ -5,7 +5,7 @@ on:
    arch:
     description: "WSA Architecture"
     required: true
-    default: "x86_64"
+    default: "x64"
     type: choice
     options:
      - x64
@@ -13,7 +13,7 @@ on:
    release_type:
     description: "WSA Release Channel"
     required: true
-    default: "Release Preview Channel"
+    default: "Release Preview"
     type: choice
     options:
      - Retail
@@ -70,7 +70,7 @@ on:
    compression:
     description: "Compression Algorithm"
     required: true
-    default: "ZIP"
+    default: "zip"
     type: choice
     options:
      - zip
