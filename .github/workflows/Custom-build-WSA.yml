@@ -6,19 +6,27 @@ on:
     type: choice
     description: Architecture WSA.
     required: true
-    options: [x64, ARM64]
-    default: x64
+    options:
+     - x64
+     - arm64
+    default: "x64"
    release_type:
     type: choice
     description: Release type of WSA. RP=Release Preview, WIS=Insider Slow, WIF=Insider Fast
     required: true
-    options: ["Retail","Release Preview","Beta","Dev"]
+    options:
+     - Retail
+     - Release Preview
+     - Beta
+     - Dev
     default: "Release Preview"
    gapps_brand:
     type: choice
     description: GApps brand. "none" for no integration of GApps
     required: true
-    options: ["MindTheGapps","None"]
+    options:
+     - MindTheGapps
+     - None
     default: "MindTheGapps"
 #   gapps-variant:
 #    type: choice
@@ -26,17 +34,16 @@ on:
 #    required: true
 #    options: ["super","stock","full","mini","micro","nano","pico","tvstock","tvmini"]
 #    default: "pico"
-   root_sol:
-    type: choice
-    description: Root solution. "none" - without root.
-    required: true
-    options: ["magisk","none"]
-    default: "magisk"
    magisk_ver:
     type: choice
     description: Magisk version.
     required: true
-    options: ["Stable","Beta","Canary","Debug"]
+    options:
+     - None
+     - Stable
+     - Beta
+     - Canary
+     - Debug
     default: "Stable"
    remove_amazon:
     description: Remove Amazon Appstore
@@ -47,7 +54,10 @@ on:
     type: choice
     description: Compress format.
     required: true
-    options: ["ZIP","7-Zip","xz"]
+    options:
+     - ZIP
+     - 7-Zip
+     - XZ
     default: "ZIP"
    prerelease:
     description: Release as Prerelease
