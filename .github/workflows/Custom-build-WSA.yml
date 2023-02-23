@@ -246,28 +246,28 @@ jobs:
                   chmod +x ./build.sh
                   ./build.sh $(echo "${COMMAND_LINE[@]}")
 
-  - name: Get tag version WSA
-    shell: bash
-    run: |
-     regex="WSA_(.*)_${{ inputs.arch }}"
-     if [[ $(ls ./output/*.${{ inputs.compression }}) =~ $regex ]]; then
-       echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
-     else
-       echo "wsaver=WSA" >> $GITHUB_ENV
-     fi
+   - name: Get tag version WSA
+     shell: bash
+     run: |
+      regex="WSA_(.*)_${{ inputs.arch }}"
+      if [[ $(ls ./output/*.${{ inputs.compression }}) =~ $regex ]]; then
+        echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+      else
+        echo "wsaver=WSA" >> $GITHUB_ENV
+      fi
 
-  - name: Upload build to release
-    uses: softprops/action-gh-release@v1
-    with:
-     files: ./output/*
-     tag_name: WSA-${{ env.wsaver }}
-     name: WSA ${{ env.wsaver }}
-     prerelease: ${{ inputs.prerelease }}
+   - name: Upload build to release
+     uses: softprops/action-gh-release@v1
+     with:
+      files: ./output/*
+      tag_name: WSA-${{ env.wsaver }}
+      name: WSA ${{ env.wsaver }}
+      prerelease: ${{ inputs.prerelease }}
 
-  - name: Delete workflow runs
-    uses: Mattraks/delete-workflow-runs@v2
-    with:
-     token: ${{ github.token }}
-     repository: ${{ github.repository }}
-     retain_days: 0
-     keep_minimum_runs: 1
+   - name: Delete workflow runs
+     uses: Mattraks/delete-workflow-runs@v2
+     with:
+      token: ${{ github.token }}
+      repository: ${{ github.repository }}
+      retain_days: 0
+      keep_minimum_runs: 1
