@@ -76,13 +76,13 @@ jobs:
   - name: Build WSA
     id: wsa
     run: scripts/build.sh \
-      --arch ${{ inputs.arch }} \
-      --release-type ${{ inputs.release-type }} \
-      --remove-amazon \
-      --magisk-ver ${{ inputs.magisk-ver }} \
-      --gapps-brand ${{ inputs.gapps-brand }} \
-      --root-sol ${{ inputs.root-sol }} \
-      --compress-format ${{ inputs.compress-format }}
+    --arch ${{ inputs.arch }} \
+    --release-type ${{ inputs.release-type }} \
+    --remove-amazon \
+    --magisk-ver ${{ inputs.magisk-ver }} \
+    --gapps-brand ${{ inputs.gapps-brand }} \
+    --root-sol ${{ inputs.root-sol }} \
+    --compress-format ${{ inputs.compress-format }}
 
   - name: Getting tag version WSA
     shell: bash
