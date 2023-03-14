@@ -94,6 +94,7 @@ jobs:
     working-directory: ./output
     run: |
       regex="WSA_(.*)_${{ inputs.arch }}"
+      $ls *.${{ inputs.compress-format }} =~ $regex
         echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
 
   - name: Upload Release Asset
