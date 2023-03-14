@@ -6,8 +6,8 @@ on:
     type: choice
     description: Architecture WSA.
     required: true
-    options: [x64, arm64]
-    default: x64
+    options: ["x64","arm64"]
+    default: "x64"
    release-type:
     type: choice
     description: Release type of WSA. RP=Release Preview, WIS=Insider Slow, WIF=Insider Fast
@@ -30,7 +30,7 @@ on:
     type: choice
     description: Root solution. "none" - without root.
     required: true
-    options: ["magisk","none"]
+    options: ["magisk","kernelsu","none"]
     default: "magisk"
    magisk-ver:
     type: choice
@@ -55,6 +55,10 @@ on:
     default: false
     type: boolean
 
+permissions:
+  contents: write
+  actions: write
+
 jobs:
  build:
   name: Build WSA
@@ -66,7 +70,8 @@ jobs:
 
   - name: Install Dependencies
     run: |
-     sudo apt update && sudo apt install -y setools lzip wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip cabextract
+     sudo apt update
+     sudo apt install -y setools lzip wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip cabextract
      python3 -m pip install requests
      aria2c -d /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
      sudo chmod +x /usr/local/bin/winetricks
@@ -74,19 +79,24 @@ jobs:
 
   - name: Build WSA
     id: wsa
-    run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release-type }} --remove-amazon --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --root-sol ${{ inputs.root-sol }} --compress-format ${{ inputs.compress-format }}
+    run: |
+      scripts/build.sh \
+        --arch ${{ inputs.arch }} \
+        --release-type ${{ inputs.release-type }} \
+        --remove-amazon \
+        --magisk-ver ${{ inputs.magisk-ver }} \
+        --gapps-brand ${{ inputs.gapps-brand }} \
+        --root-sol ${{ inputs.root-sol }} \
+        --compress-format ${{ inputs.compress-format }}
 
-  - name: Get tag version WSA
-    shell: bash
+  - name: Getting tag version WSA
     run: |
       regex="WSA_(.*)_${{ inputs.arch }}"
       if [[ $(ls ./output/*.${{ inputs.compress-format }}) =~ $regex ]]; then
         echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
-      else
-        echo "wsaver=WSA" >> $GITHUB_ENV
       fi
 
-  - name: Upload build to release
+  - name: Upload Release Asset
     uses: softprops/action-gh-release@v1
     with:
      files: ./output/*
