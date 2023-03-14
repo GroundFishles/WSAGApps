@@ -89,8 +89,8 @@ jobs:
     shell: bash
     run: |
       regex="WSA_(.*)_${{ inputs.arch }}"
-      "$(ls ./output/*.${{ inputs.compress-format }}) =~ $regex"
-      echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+      $(ls ./output/*.${{ inputs.compress-format }}) =~ $regex
+        echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
 
   - name: Upload Release Asset
     uses: softprops/action-gh-release@v1
