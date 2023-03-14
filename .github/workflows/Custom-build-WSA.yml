@@ -75,8 +75,7 @@ jobs:
 
   - name: Build WSA
     id: wsa
-    run: |
-    ./scripts/build.sh \
+    run: scripts/build.sh \
       --arch ${{ inputs.arch }} \
       --release-type ${{ inputs.release-type }} \
       --remove-amazon \
