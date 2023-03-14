@@ -6,8 +6,8 @@ on:
     type: choice
     description: Architecture WSA.
     required: true
-    options: [x64, arm64]
-    default: x64
+    options: ["x64","arm64"]
+    default: "x64"
    release-type:
     type: choice
     description: Release type of WSA. RP=Release Preview, WIS=Insider Slow, WIF=Insider Fast
