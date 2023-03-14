@@ -92,8 +92,9 @@ jobs:
   - name: Getting tag version WSA
     run: |
       regex="WSA_(.*)_${{ inputs.arch }}"
-        $(ls ./output/*.${{ inputs.compress-format }}) =~ $regex
+      if [[ $(ls ./output/*.${{ inputs.compress-format }}) =~ $regex ]]; then
           echo "wsaver=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+      fi
 
   - name: Upload Release Asset
     uses: softprops/action-gh-release@v1
