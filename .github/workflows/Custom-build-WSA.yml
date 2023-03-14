@@ -91,7 +91,7 @@ jobs:
 
   - name: Getting tag version WSA
     shell: bash
-    working-directory: ./output
+    working-directory: output
     run: |
       regex="WSA_(.*)_${{ inputs.arch }}"
       $ls *.${{ inputs.compress-format }} =~ $regex
