@@ -833,7 +833,7 @@ else
         \033[0m"
     fi
 fi
-artifact_name="WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}"
+artifact_name="WSA_${WSA_VER}_${ARCH}_${name1}${name2}"
 if [ "$NOFIX_PROPS" = "yes" ]; then
     artifact_name+="-NoFixProps"
 fi
@@ -872,7 +872,8 @@ if [ "$COMPRESS_OUTPUT" ] || [ -n "$COMPRESS_FORMAT" ]; then
             tar -cPJvf "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
         fi
     elif [ "$COMPRESS_FORMAT" = "zip" ]; then
-        7z -tzip a -mx=4 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
+        echo "Compressing with zip"
+        7z -tzip a -mx4 -mmt104 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
     fi
 else
     rm -rf "${OUTPUT_PATH:?}" || abort
