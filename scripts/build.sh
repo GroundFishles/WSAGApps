@@ -833,7 +833,7 @@ else
         \033[0m"
     fi
 fi
-artifact_name="WSA_${WSA_VER}_${ARCH}_${name1}${name2}"
+artifact_name="WSA_${WSA_VER}_${ARCH}${name1}${name2}"
 if [ "$NOFIX_PROPS" = "yes" ]; then
     artifact_name+="-NoFixProps"
 fi
